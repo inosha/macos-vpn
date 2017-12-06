@@ -1,0 +1,69 @@
+#!/bin/bash
+clear
+echo ''
+echo ''
+echo 'Disclaimer...'
+echo '/* This program is a free software. It comes without any warranty, IN NO EVENT SHALL REGENTS BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF REGENTS HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.'
+echo '*/'
+echo ''
+echo ''
+echo 'What will this script do in you mac:'
+echo '. install the brew'
+echo '.. install the sstp-client'
+echo '... Generate vpn-client connect'
+echo ''
+echo ''
+echo 'Note that you have to run this script once only, thereafter please use the "connect-UOK-VPN" to connect VPN '
+echo ''
+echo ''
+function pause(){
+   read -p "$*"
+}
+ pause 'Press [Enter] key to continue... or ctrl-c to cancel'
+
+### Get privileges
+sudo -v
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+### Get homebrew
+if !(hash brew 2> /dev/null)
+then
+ while ! /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" </dev/null; do
+    sleep 5
+    echo 'retrying homebrew install...'
+done
+fi
+
+### Get sstp-client
+if !(hash sstp-client 2> /dev/null)
+then
+ while ! brew install sstp-client </dev/null; do
+	sleep 5
+    echo 'retrying sstp-client install...'
+	done
+fi
+
+### Clean up
+brew cleanup
+
+### Creating login script
+echo 'creating login script...'
+_file="connect-UOK-VPN"
+cd ~/Desktop
+echo '#!/bin/bash' > $_file
+echo '### Get privileges'>> $_file
+echo 'sudo -v'>> $_file
+echo 'while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &'>> $_file
+echo 'echo -n UserName:' >> $_file
+echo 'read -s UserName' >> $_file
+echo 'echo $UserName' >> $_file
+echo 'echo -n password:' >> $_file
+echo 'read -s password' >> $_file
+echo 'echo $password' >> $_file
+echo '_username=$UserName' >> $_file
+echo '_password=$password' >> $_file
+echo -n 'sudo /usr/local/Cellar/sstp-client/1.0.11_1/sbin/sstpc gw-vpn-01.kln.ac.lk  --log-stderr --log-level 3 --cert-warn require-mschap-v2 noauth defaultroute refuse-eap noccp usepeerdns --user "$_username" --password "$_password" '>> $_file
+#echo --user $_username --password $_password >> $_file
+
+chmod 700 $_file
+sleep 3
