@@ -28,7 +28,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 ### Get homebrew
 if !(hash brew 2> /dev/null)
 then
- while ! /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" </dev/null; do
+ while ! /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/inosha/macos-vpn/master/package-installer)" </dev/null; do
     sleep 5
     echo 'retrying homebrew install...'
 done
@@ -51,10 +51,17 @@ echo 'creating login script...'
 _file="connect-UOK-VPN"
 cd ~/Desktop
 echo '#!/bin/bash' > $_file
-echo '### Get privileges'>> $_file
-echo 'sudo -v'>> $_file
+echo '### Get privileges' >> $_file
+echo 'sudo -v' >> $_file
 echo 'while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &'>> $_file
-echo 'echo -n UserName:' >> $_file
+echo 'clear' >> $_file
+echo 'echo Welcome to University of Kelaniya' >> $_file
+echo 'echo Use your Kelani Net ID and relevant password to log in.' >> $_file
+echo 'echo Please contact The IT HelpDesk for assistance.' >> $_file
+echo 'echo "Telephone : ( 0112903) 444"' >> $_file
+echo 'echo "Email : helpdesk@kln.ac.lk"' >> $_file
+echo 'echo -n Kelani Net ID:' >> $_file
+#echo 'echo -n UserName:' >> $_file
 echo 'read -s UserName' >> $_file
 echo 'echo $UserName' >> $_file
 echo 'echo -n password:' >> $_file
