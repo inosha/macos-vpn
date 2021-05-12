@@ -1,2 +1,2 @@
 # macos-vpn
-vpn client setup for mac OS x
+sstp vpn client for mac OS x
